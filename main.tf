@@ -70,7 +70,7 @@ resource "aws_security_group" "mts_sg" {
     to_port          = 0
     protocol         = "-1"
     # enter your IP addresses here
-    cidr_blocks      = [0.0.0.0/0]
+    cidr_blocks      = ["0.0.0.0/0"]
   }
 
   egress {
