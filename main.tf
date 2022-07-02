@@ -51,8 +51,38 @@ resource "aws_route" "default_route" {
     gateway_id = aws_internet_gateway.mtc_internet_gateway.id
 }
 
+# Associate your subnet with the route table
 resource "aws_route_table_association" "mtc_public_assoc" {
     subnet_id = aws_subnet.mtc_public_subnet.id
     #vpc_id = aws_vpc.mtc_vpc.id
     route_table_id = aws_route_table.mtc_public_rt.id
+}
+
+# Create your security group
+resource "aws_security_group" "mts_sg" {
+  name        = "dev_gs"
+  description = "dev security group"
+  vpc_id      = aws_vpc.mtc_vpc.id
+
+  ingress {
+    description      = "TLS from VPC"
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    # enter your IP addresses here
+    cidr_blocks      = [0.0.0.0/0]
+  }
+
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    # I what whatever goes into the subnet to access the open
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  tags = {
+    Name = "allow_tls"
+  }
 }
