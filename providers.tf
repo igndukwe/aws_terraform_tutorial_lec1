@@ -7,6 +7,9 @@
 # $ terraform destroy
 # $ terraform destroy -auto-approve
 
+# to format the file
+# $ terraform fmt
+
 # to view state of our resources
 # $ terraform state list
 # $ terraform state show type_the_resource_name
@@ -14,6 +17,7 @@
 # $ terraform state show aws_vpc.mtc_vpc
 # to see the entire state of all resources
 # $ terraform show 
+
 terraform {
   required_providers {
     aws = {
