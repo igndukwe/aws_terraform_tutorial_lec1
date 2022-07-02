@@ -86,3 +86,35 @@ resource "aws_security_group" "mts_sg" {
     Name = "allow_tls"
   }
 }
+
+# create an ssh key to connect
+# use the terraform file() function to enter the directory of the public key
+# instead of copying it and pasting
+resource "aws_key_pair" "mtc_auth" {
+    key_name = "mtckey"
+    public_key = file("~/.ssh/terraform_mtc_key.pub")
+}
+
+# create an aws instance
+resource "aws_instance" "dev_node" {
+    # you can scale this up but that might cost some more money
+    instance_type = "t2.micro"
+    key_name = aws_key_pair.mtc_auth.id
+    vpc_security_group_ids = [aws_security_group.mts_sg.id]
+    subnet_id = aws_subnet.mtc_public_subnet.id
+
+    # remember that terraform reads all the .tf files as once source
+    # Hence data.aws_ami.server_ami is found in the datasource.tf file
+    ami = data.aws_ami.server_ami.id
+
+    # resize the default size of the drive on this instance
+    # from default of 8 to 10
+    # t2.micro will give a max of 16
+    root_block_device {
+        volume_size = 10
+    }
+    
+    tags = {
+        Name = "dev-node"
+    }
+}
