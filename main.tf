@@ -27,4 +27,32 @@ resource "aws_subnet" "mtc_public_subnet" {
 }
 
 # create an internet gateway
-resource "aws_internet_gateway" "mtc_internet"
+resource "aws_internet_gateway" "mtc_internet_gateway" {
+  vpc_id = aws_vpc.mtc_vpc.id
+
+  tags = {
+    Name = "dev-igw"
+  }
+}
+
+# create a route table
+resource "aws_route_table" "mtc_public_rt" {
+    vpc_id = aws_vpc.mtc_vpc.id
+
+    tags = {
+        Name = "dev-public-rt"
+    }
+}
+
+resource "aws_route" "default_route" {
+    route_table_id = aws_route_table.mtc_public_rt.id
+    # all ip addresses will head to this internet getway
+    destination_cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.mtc_internet_gateway.id
+}
+
+resource "aws_route_table_association" "mtc_public_assoc" {
+    subnet_id = aws_subnet.mtc_public_subnet.id
+    #vpc_id = aws_vpc.mtc_vpc.id
+    route_table_id = aws_route_table.mtc_public_rt.id
+}
