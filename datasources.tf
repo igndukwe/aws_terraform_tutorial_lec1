@@ -5,9 +5,10 @@ data "aws_ami" "server_ami"{
     # ec2 server you choos to use 
     # we are using ubuntu 
     owners = ["099720109477"]
+
     filter {
-    name   = "name"
-    #ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-arm64-server-20220610
-    values = ["ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-arm64-server-*"]
-  }
+        name   = "name"
+        #ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-20220610
+        values = ["ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"]
+    }
 }
